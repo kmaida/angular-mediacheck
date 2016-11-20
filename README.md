@@ -304,9 +304,7 @@ Thank you!
 ## Changelog
 
 * 11/20/2016 - expanded setter/getter sample to support subscription
-* 11/20/16 - added example for a setter/getter service and supporting documentation.
-
----
+* 11/20/2016 - added example for a setter/getter service and supporting documentation.
 
 [MIT License](https://github.com/kmaida/angular2-mediacheck/blob/master/LICENSE)
 
