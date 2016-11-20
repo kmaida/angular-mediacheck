@@ -7,9 +7,9 @@ import { Component, Input, OnChanges } from '@angular/core';
   `
 })
 export class ChildComponent implements OnChanges {
-  // inherited 'isLarge' property from parent
+  // input 'isLarge' property from parent
   @Input() isLarge: boolean;
-  // display size based on the inherited property value
+  // display size based on the input property value
   size: string;
 
   // detect and respond to changes to input(s)

@@ -34,7 +34,7 @@ The following methods are provided by `MediacheckService`:
 `check(mqName)` expects a `string` parameter with the name of the media query you'd like to match, ie., `small`, `large`, etc. 
 
 * This is a shortcut for `window.matchMedia('mediaquerystring').matches`. 
-* It will return `true` if the media query matches and `false` if it doesn't. 
+* It will return `true` if the media query currently matches and `false` if it doesn't. 
 * It will also output a warning if it can't find a media query registered with the `mqName` provided.
 
 #### onMqChange(mqName, callback)
@@ -43,9 +43,9 @@ The following methods are provided by `MediacheckService`:
 
 It also expects a callback `function`. This function will execute when the media query activates.
 
-* This method adds a matchmedia listener.
-* It executes the callback function and passes the [`MediaQueryList`](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList) parameter so your callbacks can utilize it.
-* It implements zones for change detection.
+* This method [adds a MediaQueryList listener](https://msdn.microsoft.com/library/hh772467.aspx) with the `callback` parameter.
+* On media query change, it executes the callback function and passes the [`MediaQueryList`](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList) parameter so your components can utilize it.
+* It implements [zones](http://blog.thoughtram.io/angular/2016/02/01/zones-in-angular-2.html) for Angular 2 change detection.
 
 ## Usage Example
 
@@ -71,7 +71,7 @@ export class AppModule { }
 
 ### Root App Component
 
-If you will need [matchMedia](https://developer.mozilla.org/en-US/docs/Web/API/Window/matchMedia) widely throughout your app, it is recommended to inject the service only in your root app component and then use `Input` and/or `OnChanges` in child components.
+If you need [matchMedia](https://developer.mozilla.org/en-US/docs/Web/API/Window/matchMedia) with the _same_ set of media queries widely throughout your app, I recommend injecting the service _only_ in your root app component and using `Input` and/or `OnChanges` in child components.
 
 Your root app component might look something like this:
 
@@ -126,7 +126,7 @@ You can download this example here: [app.component.ts](https://github.com/kmaida
 
 ### Child Components
 
-Your root app component should be ubiquitious enough for child components to use it without having to inject `MediacheckService` and create their own matchMedia listeners. Here is an example showing two ways to use the base component's properties to react to matchmedia events:
+Your root app component should be ubiquitious enough for child components to use it without having to inject `MediacheckService` and create their own matchMedia listeners. Here is an example showing two ways to use the base component's properties to react to media query events:
 
 ```
 import { Component, Input, OnChanges } from '@angular/core';
@@ -138,9 +138,9 @@ import { Component, Input, OnChanges } from '@angular/core';
   `
 })
 export class ChildComponent implements OnChanges {
-  // inherited 'isLarge' property from parent
+  // input 'isLarge' property from parent
   @Input() isLarge: boolean;
-  // display size based on the inherited property value
+  // display size based on the input property value
   size: string;
 
   // detect and respond to changes to input(s)
