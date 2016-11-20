@@ -4,9 +4,12 @@ This is a service (with a sample use-case) that adds media query event listeners
 
 ## Overview: What's in the box?
 
-This GitHub repo contains [`mediacheck.service.ts`](https://github.com/kmaida/angular2-mediacheck/blob/master/mediacheck.service.ts). It also provides a sample [`app.component.ts`](https://github.com/kmaida/angular2-mediacheck/blob/master/app.component.ts) file demonstrating how to use `MediacheckService` in the root component of your app.
+This GitHub repo contains the [`mediacheck.service.ts`](https://github.com/kmaida/angular2-mediacheck/blob/master/mediacheck.service.ts) file. It also provides samples of ways you can utilize the `MediacheckService` in your apps.
 
-In addition, it contains a sample [`child.component.ts`](https://github.com/kmaida/angular2-mediacheck/blob/master/child.component.ts) file demonstrating a couple of ways to use `app.component.ts` to implement additional functionality in child components. 
+Read more about these code samples:
+
+* [Parent-to-child with Input / OnChanges](https://github.com/kmaida/angular2-mediacheck#usage-example-input--onchanges)
+* [Setter / Getter Service](https://github.com/kmaida/angular2-mediacheck#usage-example-setter--getter-service)
 
 ## How it Works
 
@@ -47,7 +50,7 @@ It also expects a callback `function`. This function will execute when the media
 * On media query change, it executes the callback function and passes the [`MediaQueryList`](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList) parameter so your components can utilize it.
 * It implements [zones](http://blog.thoughtram.io/angular/2016/02/01/zones-in-angular-2.html) for Angular 2 change detection.
 
-## Usage Example (Input / OnChanges)
+## Providing MediacheckService
 
 The normal use of `MediacheckService` is as a _singleton_ (unless multiple instances are specifically desired; note that care should be taken with a multiple instance approach).
 
@@ -69,9 +72,113 @@ import { MedicheckService } from './mediacheck.service';
 export class AppModule { }
 ```
 
+## Usage Example: Setter / Getter Service
+
+This is the most ubiquitious and global use-case. This approach is most effective if you have routed components and need to implement template changes based on media query throughout your app.
+
+You may wish to create an intermediary service to set and get screen size data in the root component and then share it globally throughout the app without the need to directly pass inputs to children. Keep in mind that a setter/getter service does not provide a method of observation in script, so if you need to make imperative changes, you'll have to use a hybrid approach or implement something new (feel free to submit pull requests with other useful samples!).
+
+### Mqview Service
+
+Your setter/getter service might look something like this:
+
+```
+import { Injectable } from '@angular/core';
+
+@Injectable()
+export class MqviewService {
+  isLarge: boolean;
+
+  setIsLarge(value: boolean) {
+    this.isLarge = value;
+  }
+
+  get getIsLarge(): boolean {
+    return this.isLarge;
+  }
+
+}
+```
+
+You can download this code here: [mqview.service.ts](https://github.com/kmaida/angular2-mediacheck/blob/master/sample-mqview-service/mqview.service.ts).
+
+### Root App Component
+
+Your root app component might look something like this:
+
+```
+import { Component, OnInit } from '@angular/core';
+
+import { MediacheckService } from './mediacheck.service';
+import { MqviewService } from './mqview.service';
+
+@Component({
+  selector: 'app-root',
+  template: `<router-outlet></router-outlet>`
+})
+export class AppComponent implements OnInit {
+
+  constructor(
+    private mc: MediacheckService,
+    private mqview: MqviewService
+  ) { }
+
+  ngOnInit() {
+    // determine which media query is active on initial load and set
+    this.mqview.setIsLarge(this.mc.check('large'));
+
+    // set up listener for entering 'small' media query
+    this.mc.onMqChange('small', (mql: MediaQueryList) => {
+      this.mqview.setIsLarge(false);
+    });
+
+    // set up listener for entering 'large' media query
+    this.mc.onMqChange('large', (mql: MediaQueryList) => {
+      this.mqview.setIsLarge(true);
+    });
+  }
+
+}
+```
+
+You can download this code here: [app.component.ts](https://github.com/kmaida/angular2-mediacheck/blob/master/sample-mqview-service/app.component.ts).
+
+### Component
+
+Your [routed] components might look like this:
+
+```
+import { Component, OnInit } from '@angular/core';
+
+import { MediacheckService } from './mediacheck.service';
+import { MqviewService } from './mqview.service';
+
+@Component({
+  selector: 'app-home',
+  template: `
+    <div *ngIf="mqview.getIsLarge">Large</div>
+    <div *ngIf="!mqview.getIsLarge">Small</div>
+  `
+})
+export class HomeComponent implements OnInit {
+  
+  constructor(private mqview: MqviewService) { }
+
+  ngOnInit() {
+  }
+
+}
+```
+
+You can download this code here: [home.component.ts](https://github.com/kmaida/angular2-mediacheck/blob/master/sample-mqview-service/home.component.ts).
+
+## Usage Example: Input / OnChanges
+
+If you need [matchMedia](https://developer.mozilla.org/en-US/docs/Web/API/Window/matchMedia) with the _same_ set of media queries through child components and want to react to events in both the template and the TypeScript, I recommend injecting the service _only_ in the most ancestral component(s)* possible and using `Input` and/or `OnChanges` in children.
+
 ### Parent Component
 
-If you need [matchMedia](https://developer.mozilla.org/en-US/docs/Web/API/Window/matchMedia) with the _same_ set of media queries widely throughout your app, I recommend injecting the service _only_ in the most ancestral components possible and using `Input` and/or `OnChanges` in child components.
+*_NOTE: If you want to share data across_ routed _components, this approach may not be logical. You'll want to explore [Usage Example: Setter / Getter Service](https://github.com/kmaida/angular2-mediacheck#usage-example-setter--getter-service)._
 
 Your parent component might look something like this:
 
@@ -122,9 +229,7 @@ export class AppComponent implements OnInit {
 }
 ```
 
-You can download this example here: [app.component.ts](https://github.com/kmaida/angular2-mediacheck/blob/master/app.component.ts).
-
-**Note:** If you have routing in your app, you may not be able to use the root app component (often `app.component.ts`). You may wish to create an intermediary service to set and get screen size data in the root component and then share it globally throughout the app without the need to directly pass inputs to children. An example of this may be forthcoming, or you can create one yourself and submit a PR. :)
+You can download this code here: [app.component.ts](https://github.com/kmaida/angular2-mediacheck/blob/master/sample-parent-to-child/app.component.ts).
 
 ### Child Components
 
@@ -159,7 +264,7 @@ export class ChildComponent implements OnChanges {
 }
 ```
 
-You can download this example here: [child.component.ts](https://github.com/kmaida/angular2-mediacheck/blob/master/child.component.ts).
+You can download this code here: [child.component.ts](https://github.com/kmaida/angular2-mediacheck/blob/master/sample-parent-to-child/child.component.ts).
 
 ## Contributing
 
