@@ -8,7 +8,7 @@ This GitHub repo contains the [`mediacheck.service.ts`](https://github.com/kmaid
 
 * [How it Works](https://github.com/kmaida/angular2-mediacheck#how-it-works)
 * [Providing MediacheckService](https://github.com/kmaida/angular2-mediacheck#providing-mediacheckservice)
-* [Usage Example: Setter / Getter Service](https://github.com/kmaida/angular2-mediacheck#usage-example-setter--getter-service)
+* [Usage Example: Data Service](https://github.com/kmaida/angular2-mediacheck#usage-example-data-service)
 * [Usage Example: Input / OnChanges](https://github.com/kmaida/angular2-mediacheck#usage-example-input--onchanges)
 * [Contributing](https://github.com/kmaida/angular2-mediacheck#contributing)
 * [Changelog](https://github.com/kmaida/angular2-mediacheck#changelog)
@@ -52,7 +52,7 @@ It also expects a callback `function`. This function will execute when the media
 * On media query change, it executes the callback function and passes the [`MediaQueryList`](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList) parameter so your components can utilize it.
 * It implements [zones](http://blog.thoughtram.io/angular/2016/02/01/zones-in-angular-2.html) for Angular 2 change detection.
 
-## Providing MediacheckService
+## Providing the MediacheckService
 
 The normal use of `MediacheckService` is as a _singleton_ (unless multiple instances are specifically desired; note that care should be taken with a multiple instance approach).
 
@@ -74,27 +74,40 @@ import { MedicheckService } from './mediacheck.service';
 export class AppModule { }
 ```
 
-## Usage Example: Setter / Getter Service
+## Usage Example: Data Service
 
-This is likely the simplest use-case. This approach is most effective if you have routed components and need to implement template changes based on media queries throughout your app.
+This is likely the simplest and most ubiquitious implementation example. This approach is especially effective if you have routed components and need to implement template and/or script changes based on media queries _throughout_ your app.
 
-You may wish to create an intermediary service to set and get screen size data in the root component and then share it globally throughout the app without the need to directly pass inputs to children. Keep in mind that a simple setter/getter service does not provide a method of observation in script, so if you need to make imperative changes, you'll have to use a hybrid approach or implement something new (feel free to submit pull requests with other useful samples!).
+You should create an intermediary service to set screen size data in the root component. You can then share it globally throughout the app without the need to directly pass inputs to children. Any component can access the service to get or subscribe to its data.
+
+The following `MqviewService` example supports setting, getting, and subscribing to data. We'll use the root app component to set this data by using the `MediacheckService`.
 
 ### Mqview Service
 
-Your setter/getter service might look something like this:
+Keep in mind that the data store service is entirely reliant on data flowing to it from elsewhere. This sample could be used with any data you wanted to set, get, and subscribe to in your app. 
+
+When used with the default angular2-mediacheck, the data store service might look something like this:
 
 ```
 import { Injectable } from '@angular/core';
+import { ReplaySubject } from 'rxjs/ReplaySubject';
 
 @Injectable()
 export class MqviewService {
+  // wait until a value is produced (1)
+  private isLargeSource = new ReplaySubject<boolean>(1);
   isLarge: boolean;
 
+  // isLarge subject - can be observed
+  isLarge$ = this.isLargeSource;
+
+  // set isLarge$ / isLarge values
   setIsLarge(value: boolean) {
+    this.isLargeSource.next(value);
     this.isLarge = value;
   }
 
+  // getter to retrieve current value of isLarge
   get getIsLarge(): boolean {
     return this.isLarge;
   }
@@ -106,7 +119,7 @@ You can download this code here: [mqview.service.ts](https://github.com/kmaida/a
 
 ### Root App Component
 
-Your root app component might look something like this:
+Your root app component then sets the data in `MqviewService` based on its use of `MediacheckService`. The code might look something like this:
 
 ```
 import { Component, OnInit } from '@angular/core';
@@ -147,10 +160,11 @@ You can download this code here: [app.component.ts](https://github.com/kmaida/an
 
 ### Component
 
-Your [routed] components might look like this:
+Finally, components in your app can use the getter `mqview.getIsLarge` directly to make changes in their templates. You can also _subscribe_ to the `mqview.isLarge$` subject to execute code when the media query changes. App components might look something like this:
 
 ```
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs/Subscription';
 
 import { MediacheckService } from './mediacheck.service';
 import { MqviewService } from './mqview.service';
@@ -162,11 +176,24 @@ import { MqviewService } from './mqview.service';
     <div *ngIf="!mqview.getIsLarge">Small</div>
   `
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
+  mqSub: Subscription;
   
   constructor(private mqview: MqviewService) { }
 
   ngOnInit() {
+    // subscribe to isLarge$ subject
+    this.mqSub = this.mqview.isLarge$.subscribe(
+      isLarge => {
+        // do something based on the updated value of isLarge
+        console.log('mqview isLarge changed:', isLarge);
+      }
+    );
+  }
+
+  ngOnDestroy() {
+    // prevent memory leaks
+    this.mqSub.unsubscribe();
   }
 
 }
@@ -176,11 +203,11 @@ You can download this code here: [home.component.ts](https://github.com/kmaida/a
 
 ## Usage Example: Input / OnChanges
 
-If you need [matchMedia](https://developer.mozilla.org/en-US/docs/Web/API/Window/matchMedia) with the _same_ set of media queries through child components and want to react to events in both the template and the TypeScript, I recommend injecting the service _only_ in the most ancestral component(s)* possible and using `Input` and/or `OnChanges` in children.
+If you _don't_ want to use the service above and need [matchMedia](https://developer.mozilla.org/en-US/docs/Web/API/Window/matchMedia) with the same set of media queries through child components, I recommend injecting the service _only_ in the most ancestral component(s)* and using `Input` and/or `OnChanges` in children.
 
 ### Parent Component
 
-*_NOTE: If you want to share data across_ routed _components, this approach may not be logical. You'll want to explore [Usage Example: Setter / Getter Service](https://github.com/kmaida/angular2-mediacheck#usage-example-setter--getter-service)._
+*_NOTE: If you want to share data across different_ routed _components, this approach is not logical. You'll want to explore [Usage Example: Data Service](https://github.com/kmaida/angular2-mediacheck#usage-example-data-service)._
 
 Your parent component might look something like this:
 
@@ -235,7 +262,7 @@ You can download this code here: [app.component.ts](https://github.com/kmaida/an
 
 ### Child Components
 
-Your root app component should be ubiquitious enough for child components to use it without having to inject `MediacheckService` and create their own matchMedia listeners. Here is an example showing two ways to use the base component's properties to react to media query events:
+Your parent component should be ubiquitious enough for child components to use it without having to inject `MediacheckService` and create their own matchMedia listeners. Here is an example showing two ways to use the base component's properties to react to media query events:
 
 ```
 import { Component, Input, OnChanges } from '@angular/core';
@@ -270,12 +297,13 @@ You can download this code here: [child.component.ts](https://github.com/kmaida/
 
 ## Contributing
 
-Please feel free to fork and contribute to this repository by submitting pull requests. Additional use-case samples are greatly encouraged. Please make sure that any sample code has been thoroughly checked in a project before submitting for inclusion.
+Please feel free to fork and contribute to this repository by submitting pull requests. Additional use-case samples are welcome. Please make sure that any sample code has been thoroughly tested in a real project before submitting for inclusion.
 
 Thank you!
 
 ## Changelog
 
+* 11/20/2016 - expanded setter/getter sample to support subscription
 * 11/20/16 - added example for a setter/getter service and supporting documentation.
 
 ---
