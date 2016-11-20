@@ -47,7 +47,7 @@ It also expects a callback `function`. This function will execute when the media
 * On media query change, it executes the callback function and passes the [`MediaQueryList`](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList) parameter so your components can utilize it.
 * It implements [zones](http://blog.thoughtram.io/angular/2016/02/01/zones-in-angular-2.html) for Angular 2 change detection.
 
-## Usage Example
+## Usage Example (Input / OnChanges)
 
 The normal use of `MediacheckService` is as a _singleton_ (unless multiple instances are specifically desired; note that care should be taken with a multiple instance approach).
 
@@ -69,11 +69,11 @@ import { MedicheckService } from './mediacheck.service';
 export class AppModule { }
 ```
 
-### Root App Component
+### Parent Component
 
-If you need [matchMedia](https://developer.mozilla.org/en-US/docs/Web/API/Window/matchMedia) with the _same_ set of media queries widely throughout your app, I recommend injecting the service _only_ in your root app component and using `Input` and/or `OnChanges` in child components.
+If you need [matchMedia](https://developer.mozilla.org/en-US/docs/Web/API/Window/matchMedia) with the _same_ set of media queries widely throughout your app, I recommend injecting the service _only_ in the most ancestral components possible and using `Input` and/or `OnChanges` in child components.
 
-Your root app component might look something like this:
+Your parent component might look something like this:
 
 ```
 import { Component, OnInit } from '@angular/core';
@@ -123,6 +123,8 @@ export class AppComponent implements OnInit {
 ```
 
 You can download this example here: [app.component.ts](https://github.com/kmaida/angular2-mediacheck/blob/master/app.component.ts).
+
+**Note:** If you have routing in your app, you may not be able to use the root app component (often `app.component.ts`). You may wish to create an intermediary service to set and get screen size data in the root component and then share it globally throughout the app without the need to directly pass inputs to children. An example of this may be forthcoming, or you can create one yourself and submit a PR. :)
 
 ### Child Components
 
