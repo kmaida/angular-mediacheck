@@ -14,7 +14,7 @@ export class AppComponent implements OnInit {
   isLarge: boolean;
 
   // make MediacheckService available in constructor
-  constructor(private mc: MediacheckService) {}
+  constructor(private mc: MediacheckService) { }
 
   ngOnInit() {
     // determine which media query is active on initial load
