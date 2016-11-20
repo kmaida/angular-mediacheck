@@ -1,15 +1,17 @@
 # Angular 2 mediacheck
 
-This is a service (with a sample use-case) that adds media query event listeners to your Angular 2 application. It can be used to manipulate component properties, templates, and behavior when matching different media queries. It is a spiritual successor to Angular v1.x [angular-mediaCheck](https://github.com/kmaida/angular-mediaCheck), but has been revamped and greatly simplified for a better Angular 2 implementation.
+This is a service (with usage examples) that **adds media query event listeners to your Angular 2 application**. It can be used to manipulate component properties, templates, and behavior when matching different media queries. It is a spiritual successor to Angular v1.x [angular-mediaCheck](https://github.com/kmaida/angular-mediaCheck), but has been revamped and greatly simplified for a better Angular 2 implementation.
 
-## Overview: What's in the box?
+## What's in the box?
 
 This GitHub repo contains the [`mediacheck.service.ts`](https://github.com/kmaida/angular2-mediacheck/blob/master/mediacheck.service.ts) file. It also provides samples of ways you can utilize the `MediacheckService` in your apps.
 
-Read more about these code samples:
-
-* [Parent-to-child with Input / OnChanges](https://github.com/kmaida/angular2-mediacheck#usage-example-input--onchanges)
-* [Setter / Getter Service](https://github.com/kmaida/angular2-mediacheck#usage-example-setter--getter-service)
+* [How it Works](https://github.com/kmaida/angular2-mediacheck#how-it-works)
+* [Providing MediacheckService](https://github.com/kmaida/angular2-mediacheck#providing-mediacheckservice)
+* [Usage Example: Setter / Getter Service](https://github.com/kmaida/angular2-mediacheck#usage-example-setter--getter-service)
+* [Usage Example: Input / OnChanges](https://github.com/kmaida/angular2-mediacheck#usage-example-input--onchanges)
+* [Contributing](https://github.com/kmaida/angular2-mediacheck#contributing)
+* [Changelog](https://github.com/kmaida/angular2-mediacheck#changelog)
 
 ## How it Works
 
@@ -74,9 +76,9 @@ export class AppModule { }
 
 ## Usage Example: Setter / Getter Service
 
-This is the most ubiquitious and global use-case. This approach is most effective if you have routed components and need to implement template changes based on media query throughout your app.
+This is likely the simplest use-case. This approach is most effective if you have routed components and need to implement template changes based on media queries throughout your app.
 
-You may wish to create an intermediary service to set and get screen size data in the root component and then share it globally throughout the app without the need to directly pass inputs to children. Keep in mind that a setter/getter service does not provide a method of observation in script, so if you need to make imperative changes, you'll have to use a hybrid approach or implement something new (feel free to submit pull requests with other useful samples!).
+You may wish to create an intermediary service to set and get screen size data in the root component and then share it globally throughout the app without the need to directly pass inputs to children. Keep in mind that a simple setter/getter service does not provide a method of observation in script, so if you need to make imperative changes, you'll have to use a hybrid approach or implement something new (feel free to submit pull requests with other useful samples!).
 
 ### Mqview Service
 
@@ -268,7 +270,13 @@ You can download this code here: [child.component.ts](https://github.com/kmaida/
 
 ## Contributing
 
-Please feel free to fork and contribute to this repository by submitting pull requests.
+Please feel free to fork and contribute to this repository by submitting pull requests. Additional use-case samples are greatly encouraged. Please make sure that any sample code has been thoroughly checked in a project before submitting for inclusion.
+
+Thank you!
+
+## Changelog
+
+* 11/20/16 - added example for a setter/getter service and supporting documentation.
 
 ---
 
