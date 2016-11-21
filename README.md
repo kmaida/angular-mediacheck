@@ -86,17 +86,16 @@ The following `MqviewService` example supports setting, getting, and subscribing
 
 Keep in mind that the data store service is entirely reliant on data flowing to it from elsewhere. This sample could be used with any data you wanted to set, get, and subscribe to in your app. 
 
-When used with the default angular2-mediacheck, the data store service might look something like this:
+When used with the default **angular2-mediacheck**, the data store service might look something like this:
 
 ```
 import { Injectable } from '@angular/core';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 @Injectable()
 export class MqviewService {
-  // wait until a value is produced (1)
-  private isLargeSource = new ReplaySubject<boolean>(1);
   isLarge: boolean;
+  private isLargeSource = new BehaviorSubject<boolean>(this.isLarge);
 
   // isLarge subject - can be observed
   isLarge$ = this.isLargeSource;

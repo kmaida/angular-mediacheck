@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 @Injectable()
 export class MqviewService {
-  // wait until a value is produced (1)
-  private isLargeSource = new ReplaySubject<boolean>(1);
   isLarge: boolean;
+  private isLargeSource = new BehaviorSubject<boolean>(this.isLarge);
 
   // isLarge subject - can be observed
   isLarge$ = this.isLargeSource;
