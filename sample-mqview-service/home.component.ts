@@ -1,14 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 
-import { MediacheckService } from './mediacheck.service';
 import { MqviewService } from './mqview.service';
 
 @Component({
   selector: 'app-home',
   template: `
-    <div *ngIf="mqview.getIsLarge">Large</div>
-    <div *ngIf="!mqview.getIsLarge">Small</div>
+    <div *ngIf="mqview.getIsLarge">Show desktop template</div>
+    <div *ngIf="!mqview.getIsLarge">Show mobile template</div>
   `
 })
 export class HomeComponent implements OnInit, OnDestroy {

@@ -52,6 +52,10 @@ It also expects a callback `function`. This function will execute when the media
 * On media query change, it executes the callback function and passes the [`MediaQueryList`](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList) parameter so your components can utilize it.
 * It implements [zones](http://blog.thoughtram.io/angular/2016/02/01/zones-in-angular-2.html) for Angular 2 change detection.
 
+#### get getMqName()
+
+`getMqName` is a getter that returns the string key for the currently active media query, ie., `small`, `large`, etc.
+
 ## Providing the MediacheckService
 
 The normal use of `MediacheckService` is as a _singleton_ (unless multiple instances are specifically desired; note that care should be taken with a multiple instance approach).
@@ -69,7 +73,7 @@ import { MedicheckService } from './mediacheck.service';
 @NgModule({
   ...,
   providers: [MediacheckService],
-  bootstrap: [...]
+  ...
 })
 export class AppModule { }
 ```
@@ -128,7 +132,10 @@ import { MqviewService } from './mqview.service';
 
 @Component({
   selector: 'app-root',
-  template: `<router-outlet></router-outlet>`
+  template: `
+    <p><strong>Media Query Shortname:</strong> {{mc.getMqName}}</p>
+    <router-outlet></router-outlet>
+  `
 })
 export class AppComponent implements OnInit {
 
@@ -302,8 +309,9 @@ Thank you!
 
 ## Changelog
 
+* 11/21/2016 - added a getter in `MediacheckService` that returns the key of the active media query
 * 11/20/2016 - expanded setter/getter sample to support subscription
-* 11/20/2016 - added example for a setter/getter service and supporting documentation.
+* 11/20/2016 - added example for a setter/getter service and supporting documentation
 
 [MIT License](https://github.com/kmaida/angular2-mediacheck/blob/master/LICENSE)
 

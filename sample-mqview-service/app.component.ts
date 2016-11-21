@@ -5,7 +5,10 @@ import { MqviewService } from './mqview.service';
 
 @Component({
   selector: 'app-root',
-  template: `<router-outlet></router-outlet>`
+  template: `
+    <p><strong>View:</strong> {{mc.getMqName}}</p>
+    <router-outlet></router-outlet>
+  `
 })
 export class AppComponent implements OnInit {
 
