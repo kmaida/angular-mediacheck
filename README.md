@@ -126,7 +126,6 @@ Your root app component then sets the data in `MqviewService` based on its use o
 
 ```
 import { Component, OnInit } from '@angular/core';
-
 import { MediacheckService } from './mediacheck.service';
 import { MqviewService } from './mqview.service';
 
@@ -171,7 +170,6 @@ Finally, components in your app can use the getter `mqview.getIsLarge` directly 
 ```
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
-
 import { MediacheckService } from './mediacheck.service';
 import { MqviewService } from './mqview.service';
 
