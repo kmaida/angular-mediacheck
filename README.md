@@ -65,8 +65,6 @@ The normal use of `MediacheckService` is as a _singleton_ (unless multiple insta
 In the file containing the `@NgModule` where you wish to inject the service (for many projects, this will be `app.module.ts`), import the `MediacheckService` class and add it to the `@NgModule`'s `providers` array:
 
 ```
-// app.module.ts
-
 ...
 import { MedicheckService } from './mediacheck.service';
 
