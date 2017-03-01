@@ -181,7 +181,7 @@ import { MqviewService } from './mqview.service';
 export class HomeComponent implements OnInit, OnDestroy {
   mqSub: Subscription;
   
-  constructor(private mqview: MqviewService) { }
+  constructor(public mqview: MqviewService) { }
 
   ngOnInit() {
     // subscribe to isLarge$ subject
@@ -287,8 +287,8 @@ export class ChildComponent implements OnChanges {
     console.log(`isLarge input change detected: ${isLargeCurrent}`);
   }
 
-  // getter to return property
-  get getSize() {
+  // accessor to return property
+  get getSize(): string {
     this.size = this.isLarge ? 'Big' : 'Little';
     return this.size;
   }
@@ -304,7 +304,7 @@ Please feel free to fork and contribute to this repository by submitting pull re
 Thank you!
 
 ## Changelog
-
+* 03/01/2017 - cleaned up code to comply with angular-cli rc.0 linting rules
 * 11/21/2016 - added a getter in `MediacheckService` that returns the key of the active media query
 * 11/20/2016 - expanded setter/getter sample to support subscription
 * 11/20/2016 - added example for a setter/getter service and supporting documentation

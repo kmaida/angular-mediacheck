@@ -18,8 +18,8 @@ export class ChildComponent implements OnChanges {
     console.log(`isLarge input change detected: ${isLargeCurrent}`);
   }
 
-  // getter to return property
-  get getSize() {
+  // accessor to return property
+  get getSize(): string {
     this.size = this.isLarge ? 'Big' : 'Little';
     return this.size;
   }

@@ -13,7 +13,7 @@ import { MqviewService } from './mqview.service';
 export class HomeComponent implements OnInit, OnDestroy {
   mqSub: Subscription;
   
-  constructor(private mqview: MqviewService) { }
+  constructor(public mqview: MqviewService) { }
 
   ngOnInit() {
     // subscribe to isLarge$ subject

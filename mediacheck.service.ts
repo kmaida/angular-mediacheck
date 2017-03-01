@@ -1,5 +1,7 @@
 import { Injectable, NgZone } from '@angular/core';
 
+declare var window: any;
+
 @Injectable()
 export class MediacheckService {
   mqueries = {
@@ -17,7 +19,7 @@ export class MediacheckService {
   }
 
   get getMqName(): string {
-    for (let key in this.mqueries) {
+    for (const key in this.mqueries) {
       if (window.matchMedia(this.mqueries[key]).matches) {
         return key;
       }
@@ -25,16 +27,16 @@ export class MediacheckService {
   }
 
   onMqChange(mqName: string, callback) {
-    let self = this;
+    const self = this;
 
     if (typeof callback === 'function') {
-      let mql: MediaQueryList = window.matchMedia(this.mqueries[mqName]);
+      const mql = window.matchMedia(this.mqueries[mqName]);
 
       // if listener is already in list, this has no effect
-      mql.addListener((mql: MediaQueryList) => {
+      mql.addListener((mqlParam) => {
         self.zone.run(() => {
-          if (mql.matches) {
-            callback(mql);
+          if (mqlParam.matches) {
+            callback(mqlParam);
           }
         });
       });
