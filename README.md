@@ -97,7 +97,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 @Injectable()
 export class MqviewService {
   isLarge: boolean;
-  private isLargeSource = new BehaviorSubject<boolean>(this.isLarge);
+  isLargeSource = new BehaviorSubject<boolean>(this.isLarge);
 
   // isLarge subject - can be observed
   isLarge$ = this.isLargeSource;
@@ -304,7 +304,8 @@ Please feel free to fork and contribute to this repository by submitting pull re
 Thank you!
 
 ## Changelog
-* 03/01/2017 - cleaned up code to comply with angular-cli rc.0 linting rules
+* 03/23/2017 - simplified code in mqview service
+* 03/01/2017 - cleaned up code to comply with angular-cli rc linting rules
 * 11/21/2016 - added a getter in `MediacheckService` that returns the key of the active media query
 * 11/20/2016 - expanded setter/getter sample to support subscription
 * 11/20/2016 - added example for a setter/getter service and supporting documentation

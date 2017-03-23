@@ -4,7 +4,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 @Injectable()
 export class MqviewService {
   isLarge: boolean;
-  private isLargeSource = new BehaviorSubject<boolean>(this.isLarge);
+  isLargeSource = new BehaviorSubject<boolean>(this.isLarge);
 
   // isLarge subject - can be observed
   isLarge$ = this.isLargeSource;
