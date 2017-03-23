@@ -97,14 +97,11 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 @Injectable()
 export class MqviewService {
   isLarge: boolean;
-  isLargeSource = new BehaviorSubject<boolean>(this.isLarge);
-
-  // isLarge subject - can be observed
-  isLarge$ = this.isLargeSource;
+  isLarge$ = new BehaviorSubject<boolean>(this.isLarge);
 
   // set isLarge$ / isLarge values
   setIsLarge(value: boolean) {
-    this.isLargeSource.next(value);
+    this.isLarge$.next(value);
     this.isLarge = value;
   }
 
@@ -146,12 +143,12 @@ export class AppComponent implements OnInit {
     this.mqview.setIsLarge(this.mc.check('large'));
 
     // set up listener for entering 'small' media query
-    this.mc.onMqChange('small', (mql: MediaQueryList) => {
+    this.mc.onMqChange('small', (mql) => {
       this.mqview.setIsLarge(false);
     });
 
     // set up listener for entering 'large' media query
-    this.mc.onMqChange('large', (mql: MediaQueryList) => {
+    this.mc.onMqChange('large', (mql) => {
       this.mqview.setIsLarge(true);
     });
   }
@@ -237,22 +234,22 @@ export class AppComponent implements OnInit {
     this.isLarge = this.mc.check('large');
 
     // set up listener for entering 'small' media query
-    this.mc.onMqChange('small', (mql: MediaQueryList) => {
+    this.mc.onMqChange('small', (mql) => {
       this.showSmall(mql);
     });
 
     // set up listener for entering 'large' media query
-    this.mc.onMqChange('large', (mql: MediaQueryList) => {
+    this.mc.onMqChange('large', (mql) => {
       this.showLarge(mql);
     });
   }
 
-  showSmall(mql: MediaQueryList) {
+  showSmall(mql) {
     console.log(`Entering SMALL mq: ${mql.media}`);
     this.isLarge = false;
   }
 
-  showLarge(mql: MediaQueryList) {
+  showLarge(mql) {
     console.log(`Entering LARGE mq: ${mql.media}`);
     this.isLarge = true;
   }
@@ -304,7 +301,7 @@ Please feel free to fork and contribute to this repository by submitting pull re
 Thank you!
 
 ## Changelog
-* 03/23/2017 - simplified code in mqview service
+* 03/23/2017 - simplified code in helper service and in components
 * 03/01/2017 - cleaned up code to comply with angular-cli rc linting rules
 * 11/21/2016 - added a getter in `MediacheckService` that returns the key of the active media query
 * 11/20/2016 - expanded setter/getter sample to support subscription

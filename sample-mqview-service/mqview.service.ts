@@ -4,14 +4,11 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 @Injectable()
 export class MqviewService {
   isLarge: boolean;
-  isLargeSource = new BehaviorSubject<boolean>(this.isLarge);
-
-  // isLarge subject - can be observed
-  isLarge$ = this.isLargeSource;
+  isLarge$ = new BehaviorSubject<boolean>(this.isLarge);
 
   // set isLarge$ / isLarge values
   setIsLarge(value: boolean) {
-    this.isLargeSource.next(value);
+    this.isLarge$.next(value);
     this.isLarge = value;
   }
 

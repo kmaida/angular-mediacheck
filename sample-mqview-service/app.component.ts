@@ -22,12 +22,12 @@ export class AppComponent implements OnInit {
     this.mqview.setIsLarge(this.mc.check('large'));
 
     // set up listener for entering 'small' media query
-    this.mc.onMqChange('small', (mql: MediaQueryList) => {
+    this.mc.onMqChange('small', (mql) => {
       this.mqview.setIsLarge(false);
     });
 
     // set up listener for entering 'large' media query
-    this.mc.onMqChange('large', (mql: MediaQueryList) => {
+    this.mc.onMqChange('large', (mql) => {
       this.mqview.setIsLarge(true);
     });
   }
