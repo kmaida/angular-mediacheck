@@ -1,6 +1,6 @@
-# Angular 2 mediacheck
+# Angular mediacheck
 
-This is a service (with usage examples) that **adds media query event listeners to your Angular 2 application**. It can be used to manipulate component properties, templates, and behavior when matching different media queries. It is a spiritual successor to Angular v1.x [angular-mediaCheck](https://github.com/kmaida/angular-mediaCheck), but has been revamped and greatly simplified for a better Angular 2 implementation.
+This is a service (with usage examples) that **adds media query event listeners to your Angular 2 application**. It can be used to manipulate component properties, templates, and behavior when matching different media queries. It is a spiritual successor to Angular v1.x [angularjs-mediaCheck](https://github.com/kmaida/angularjs-mediaCheck), but has been revamped and greatly simplified for a better Angular (v2+) implementation.
 
 ## What's in the box?
 
@@ -301,6 +301,8 @@ Please feel free to fork and contribute to this repository by submitting pull re
 Thank you!
 
 ## Changelog
+
+* 03/24/2017 - rename repo to `angular-mediacheck` to match Angular branding guidelines and honor release of Angular 4
 * 03/23/2017 - simplified code in helper service and in components
 * 03/01/2017 - cleaned up code to comply with angular-cli rc linting rules
 * 11/21/2016 - added a getter in `MediacheckService` that returns the key of the active media query
