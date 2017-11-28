@@ -1,21 +1,21 @@
 # Angular mediacheck
 
-This is a service (with usage examples) that **adds media query event listeners to your Angular 2 application**. It can be used to manipulate component properties, templates, and behavior when matching different media queries. It is a spiritual successor to Angular v1.x [angularjs-mediaCheck](https://github.com/kmaida/angularjs-mediaCheck), but has been revamped and greatly simplified for a better Angular (v2+) implementation.
+This is a service (with usage examples) that **adds media query event listeners to your Angular application**. It can be used to manipulate component properties, templates, and behavior when matching different media queries. It is a spiritual successor to Angular v1.x [angularjs-mediaCheck](https://github.com/kmaida/angularjs-mediaCheck), but has been revamped and greatly simplified for a better Angular (v2+) implementation.
 
 ## What's in the box?
 
-This GitHub repo contains the [`mediacheck.service.ts`](https://github.com/kmaida/angular2-mediacheck/blob/master/mediacheck.service.ts) file. It also provides samples of ways you can utilize the `MediacheckService` in your apps.
+This GitHub repo contains the [`mediacheck.service.ts`](https://github.com/kmaida/angular-mediacheck/blob/master/mediacheck.service.ts) file. It also provides samples of ways you can utilize the `MediacheckService` in your apps.
 
-* [How it Works](https://github.com/kmaida/angular2-mediacheck#how-it-works)
-* [Providing MediacheckService](https://github.com/kmaida/angular2-mediacheck#providing-mediacheckservice)
-* [Usage Example: Data Service](https://github.com/kmaida/angular2-mediacheck#usage-example-data-service)
-* [Usage Example: Input / OnChanges](https://github.com/kmaida/angular2-mediacheck#usage-example-input--onchanges)
-* [Contributing](https://github.com/kmaida/angular2-mediacheck#contributing)
-* [Changelog](https://github.com/kmaida/angular2-mediacheck#changelog)
+* [How it Works](https://github.com/kmaida/angular-mediacheck#how-it-works)
+* [Providing MediacheckService](https://github.com/kmaida/angular-mediacheck#providing-mediacheckservice)
+* [Usage Example: Data Service](https://github.com/kmaida/angular-mediacheck#usage-example-data-service)
+* [Usage Example: Input / OnChanges](https://github.com/kmaida/angular-mediacheck#usage-example-input--onchanges)
+* [Contributing](https://github.com/kmaida/angular-mediacheck#contributing)
+* [Changelog](https://github.com/kmaida/angular-mediacheck#changelog)
 
 ## How it Works
 
-Check out the service source code: [`mediacheck.service.ts`](https://github.com/kmaida/angular2-mediacheck/blob/master/mediacheck.service.ts).
+Check out the service source code: [`mediacheck.service.ts`](https://github.com/kmaida/angular-mediacheck/blob/master/mediacheck.service.ts).
 
 ### Media Query Definitions
 
@@ -88,7 +88,7 @@ The following `MqviewService` example supports setting, getting, and subscribing
 
 Keep in mind that the data store service is entirely reliant on data flowing to it from elsewhere. This sample could be used with any data you wanted to set, get, and subscribe to in your app. 
 
-When used with the default **angular2-mediacheck**, the data store service might look something like this:
+When used with the default **angular-mediacheck**, the data store service might look something like this:
 
 ```
 import { Injectable } from '@angular/core';
@@ -113,7 +113,7 @@ export class MqviewService {
 }
 ```
 
-You can download this code here: [mqview.service.ts](https://github.com/kmaida/angular2-mediacheck/blob/master/sample-mqview-service/mqview.service.ts).
+You can download this code here: [mqview.service.ts](https://github.com/kmaida/angular-mediacheck/blob/master/sample-mqview-service/mqview.service.ts).
 
 ### Root App Component
 
@@ -156,7 +156,7 @@ export class AppComponent implements OnInit {
 }
 ```
 
-You can download this code here: [app.component.ts](https://github.com/kmaida/angular2-mediacheck/blob/master/sample-mqview-service/app.component.ts).
+You can download this code here: [app.component.ts](https://github.com/kmaida/angular-mediacheck/blob/master/sample-mqview-service/app.component.ts).
 
 ### Component
 
@@ -198,7 +198,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 }
 ```
 
-You can download this code here: [home.component.ts](https://github.com/kmaida/angular2-mediacheck/blob/master/sample-mqview-service/home.component.ts).
+You can download this code here: [home.component.ts](https://github.com/kmaida/angular-mediacheck/blob/master/sample-mqview-service/home.component.ts).
 
 ## Usage Example: Input / OnChanges
 
@@ -206,7 +206,7 @@ If you _don't_ want to use the service above and need [matchMedia](https://devel
 
 ### Parent Component
 
-*_NOTE: If you want to share data across different_ routed _components, this approach is not logical. You'll want to explore [Usage Example: Data Service](https://github.com/kmaida/angular2-mediacheck#usage-example-data-service)._
+*_NOTE: If you want to share data across different_ routed _components, this approach is not logical. You'll want to explore [Usage Example: Data Service](https://github.com/kmaida/angular-mediacheck#usage-example-data-service)._
 
 Your parent component might look something like this:
 
@@ -257,7 +257,7 @@ export class AppComponent implements OnInit {
 }
 ```
 
-You can download this code here: [app.component.ts](https://github.com/kmaida/angular2-mediacheck/blob/master/sample-parent-to-child/app.component.ts).
+You can download this code here: [app.component.ts](https://github.com/kmaida/angular-mediacheck/blob/master/sample-parent-to-child/app.component.ts).
 
 ### Child Components
 
@@ -280,7 +280,7 @@ export class ChildComponent implements OnChanges {
 
   // detect and respond to changes to input(s)
   ngOnChanges(changes) {
-    let isLargeCurrent = changes.isLarge.currentValue;
+    const isLargeCurrent = changes.isLarge.currentValue;
     console.log(`isLarge input change detected: ${isLargeCurrent}`);
   }
 
@@ -292,7 +292,7 @@ export class ChildComponent implements OnChanges {
 }
 ```
 
-You can download this code here: [child.component.ts](https://github.com/kmaida/angular2-mediacheck/blob/master/sample-parent-to-child/child.component.ts).
+You can download this code here: [child.component.ts](https://github.com/kmaida/angular-mediacheck/blob/master/sample-parent-to-child/child.component.ts).
 
 ## Contributing
 
@@ -302,6 +302,7 @@ Thank you!
 
 ## Changelog
 
+* 11/28/2017 - update samples and README to verify Angular 5 compatibility
 * 03/24/2017 - rename repo to `angular-mediacheck` to match Angular branding guidelines and honor release of Angular 4
 * 03/23/2017 - simplified code in helper service and in components
 * 03/01/2017 - cleaned up code to comply with angular-cli rc linting rules
@@ -309,7 +310,7 @@ Thank you!
 * 11/20/2016 - expanded setter/getter sample to support subscription
 * 11/20/2016 - added example for a setter/getter service and supporting documentation
 
-[MIT License](https://github.com/kmaida/angular2-mediacheck/blob/master/LICENSE)
+[MIT License](https://github.com/kmaida/angular-mediacheck/blob/master/LICENSE)
 
 
 
