@@ -49,28 +49,21 @@ You may, of course, provide your own different breakpoints in your app that the 
 
 This method initializes a [subject](https://medium.com/@benlesh/on-the-subject-of-subjects-in-rxjs-2b08b7198b93): `mq$`. This subject provides a _stream_ that emits a value whenever the browser's media query changes. If you wish to use subscriptions to execute functionality when the breakpoint changes, then run the `initSubject()` method in your component's constructor and then subscribe to the `mq$` subject that is subsequently created.
 
-> **Note:** If you want to use your own custom media queries, you must pass them to the `setQueries(customMqsObj)` method _before_ calling `initSubject()`. If you do not, the subject will initialize using the default media queries defined in MediacheckService.
-
 This can be done like so:
 
 ```
-  customMqs = {
-    mobile: '(max-width: 480px)',
-    tablet: '(min-width: 481px) and (max-width: 768px)',
-    desktop: '(min-width: 769px)'
-  };
-
-  constructor(private mc: MediacheckService) {
-    this.mc.setQueries(this.customMqs);
-    this.mc.initSubject();
+  constructor(private mediacheck: MediacheckService) {
+    this.mediacheck.initSubject();
   }
 
   ngOnInit() {
-    this.mc.mq$.subscribe((mq) => {
+    this.mediacheck.mq$.subscribe((mq) => {
       console.log('current mq:', mq);
     });
   }
 ```
+
+> **Note:** If you want to use your own custom media queries, you must pass them to the `setQueries(customMqsObj)` method _before_ calling `initSubject()`. If you do not, the subject will initialize using the default media queries defined in MediacheckService.
 
 #### check(mqName) 
 
@@ -127,7 +120,7 @@ import { MedicheckService } from './mediacheck.service';
   providers: [MediacheckService]
 })
 export class InstanceComponent {
-  constructor(private mc: MediacheckService) {}
+  constructor(private mediacheck: MediacheckService) {}
   ...
 ```
 
@@ -152,6 +145,3 @@ Thank you!
 * 11/20/2016 - added example for a setter/getter service and supporting documentation
 
 [MIT License](https://github.com/kmaida/angular-mediacheck/blob/master/LICENSE)
-
-
-
