@@ -1,0 +1,11 @@
+<app-large *ngIf="isLarge" [pets]="pets"></app-large>
+<app-small *ngIf="!isLarge" [pets]="pets"></app-small>
+
+<div class="card">
+  <div class="card-body">
+    <p class="card-text">
+      <strong>Active Breakpoint Name:</strong> {{ mqName }}<br>
+      <strong>Media Query:</strong> {{ media }}
+    </p>
+  </div>
+</div>

@@ -6,18 +6,21 @@ This is a service (with usage examples) that **adds media query event listeners 
 
 This GitHub repo contains the [`mediacheck.service.ts`](https://github.com/kmaida/angular-mediacheck/blob/master/mediacheck.service.ts) file. It also provides samples of ways you can utilize the `MediacheckService` in your apps.
 
-* [How it Works](https://github.com/kmaida/angular-mediacheck#how-it-works)
-* [Providing MediacheckService](https://github.com/kmaida/angular-mediacheck#providing-mediacheckservice)
-* [Usage Example: Data Service](https://github.com/kmaida/angular-mediacheck#usage-example-data-service)
-* [Usage Example: Input / OnChanges](https://github.com/kmaida/angular-mediacheck#usage-example-input--onchanges)
-* [Contributing](https://github.com/kmaida/angular-mediacheck#contributing)
-* [Changelog](https://github.com/kmaida/angular-mediacheck#changelog)
+* [How it Works](#how-it-works)
+* [Providing MediacheckService](#providing-mediacheckservice)
+* [Usage Examples](#usage-examples)
+* [Contributing](#contributing)
+* [Changelog](#changelog)
 
 ## How it Works
 
-Check out the service source code: [`mediacheck.service.ts`](https://github.com/kmaida/angular-mediacheck/blob/master/mediacheck.service.ts).
+Check out / download the service source code here: [`mediacheck.service.ts`](https://github.com/kmaida/angular-mediacheck/blob/master/mediacheck.service.ts).
 
-### Media Query Definitions
+### Methods
+
+The following methods are provided by `MediacheckService`:
+
+#### setQueries(customMqs)
 
 Out of the box, the service currently provides two simple media queries. They are defined in the service like so:
 
@@ -28,39 +31,72 @@ mqueries = {
 };
 ```
 
-You may, of course, provide additional media queries. Simply add them to the `mqueries` object and reference them by key as needed.
+You may, of course, provide your own different breakpoints in your app that the service will then use. You can do so by passing them to the `setQueries(customMqsObj)` method like so:
 
-### Methods
+```
+  customMqs = {
+    mobile: '(max-width: 480px)',
+    tablet: '(min-width: 481px) and (max-width: 768px)',
+    desktop: '(min-width: 769px)'
+  };
 
-The following methods are provided by `MediacheckService`:
+  constructor(private mediacheck: MediacheckService) {
+    this.mediacheck.setQueries(this.customMqs);
+  }
+```
+
+#### initSubject()
+
+This method initializes a [subject](https://medium.com/@benlesh/on-the-subject-of-subjects-in-rxjs-2b08b7198b93): `mq$`. This subject provides a _stream_ that emits a value whenever the browser's media query changes. If you wish to use subscriptions to execute functionality when the breakpoint changes, then run the `initSubject()` method in your component's constructor and then subscribe to the `mq$` subject that is subsequently created.
+
+> **Note:** If you want to use your own custom media queries, you must pass them to the `setQueries(customMqsObj)` method _before_ calling `initSubject()`. If you do not, the subject will initialize using the default media queries defined in MediacheckService.
+
+This can be done like so:
+
+```
+  customMqs = {
+    mobile: '(max-width: 480px)',
+    tablet: '(min-width: 481px) and (max-width: 768px)',
+    desktop: '(min-width: 769px)'
+  };
+
+  constructor(private mc: MediacheckService) {
+    this.mc.setQueries(this.customMqs);
+    this.mc.initSubject();
+  }
+
+  ngOnInit() {
+    this.mc.mq$.subscribe((mq) => {
+      console.log('current mq:', mq);
+    });
+  }
+```
 
 #### check(mqName) 
 
-`check(mqName)` expects a `string` parameter with the name of the media query you'd like to match, ie., `small`, `large`, etc. 
+`check(mqName)` expects a `string` parameter with the name of the media query you'd like to match, e.g., `small`, `large`, etc. 
 
-* This is a shortcut for `window.matchMedia('mediaquerystring').matches`. 
-* It will return `true` if the media query currently matches and `false` if it doesn't. 
-* It will also output a warning if it can't find a media query registered with the `mqName` provided.
-
-#### onMqChange(mqName, callback)
-
-`onMqChange(mqName, callback)` expects a `string` parameter with the name of the media query you'd like to match, ie., `small`, `large`, etc. 
-
-It also expects a callback `function`. This function will execute when the media query activates.
-
-* This method [adds a MediaQueryList listener](https://msdn.microsoft.com/library/hh772467.aspx) with the `callback` parameter.
-* On media query change, it executes the callback function and passes the [`MediaQueryList`](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList) parameter so your components can utilize it.
-* It implements [zones](http://blog.thoughtram.io/angular/2016/02/01/zones-in-angular-2.html) for Angular 2 change detection.
+* This is a shortcut for `window.matchMedia('mediaquerystring').matches`.
+* It will return `true` if the media query currently matches and `false` if it doesn't.
+* It will output a warning if it can't find a media query registered with the `mqName` provided.
 
 #### get getMqName()
 
-`getMqName` is a getter that returns the string key for the currently active media query, ie., `small`, `large`, etc.
+`getMqName` is a getter that returns the string key for the currently active media query, e.g., `small`, `large`, etc.
 
-## Providing the MediacheckService
+#### onMqChange(mqName, callback)
 
-The normal use of `MediacheckService` is as a _singleton_ (unless multiple instances are specifically desired; note that care should be taken with a multiple instance approach).
+`onMqChange(mqName, callback)` expects a `string` parameter with the name of the media query you'd like to match, e.g., `small`, `large`, etc. It also expects a callback `function`. This function will execute when the media query activates.
 
-### App Module
+* This method [adds a MediaQueryList listener](https://msdn.microsoft.com/library/hh772467.aspx) with the `callback` parameter.
+* On media query change, it executes the callback function and passes the [`MediaQueryList`](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList) parameter so your components can utilize it.
+* It implements [zones](http://blog.thoughtram.io/angular/2016/02/01/zones-in-angular-2.html) for Angular change detection.
+
+## Providing MediacheckService
+
+`MediacheckService` can be used as a _singleton_ or as _multiple instances_. Be mindful of your usage.
+
+### App Module (singleton)
 
 In the file containing the `@NgModule` where you wish to inject the service (for many projects, this will be `app.module.ts`), import the `MediacheckService` class and add it to the `@NgModule`'s `providers` array:
 
@@ -76,223 +112,28 @@ import { MedicheckService } from './mediacheck.service';
 export class AppModule { }
 ```
 
-## Usage Example: Data Service
+In components that should use the global instance of `MediacheckService`, be sure to import the service and add it to the component's constructor.
 
-This is likely the simplest and most ubiquitious implementation example. This approach is especially effective if you have routed components and need to implement template and/or script changes based on media queries _throughout_ your app.
+### Component Providers (instances)
 
-You should create an intermediary service to set screen size data in the root component. You can then share it globally throughout the app without the need to directly pass inputs to children. Any component can access the service to get or subscribe to its data.
-
-The following `MqviewService` example supports setting, getting, and subscribing to data. We'll use the root app component to set this data by using the `MediacheckService`.
-
-### Mqview Service
-
-Keep in mind that the data store service is entirely reliant on data flowing to it from elsewhere. This sample could be used with any data you wanted to set, get, and subscribe to in your app. 
-
-When used with the default **angular-mediacheck**, the data store service might look something like this:
+In the component where you would like to create a MediacheckService instance, import `MediacheckService` and add it to the `@Component`'s `providers` array. Make sure to pass it to the constructor as well.
 
 ```
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-
-@Injectable()
-export class MqviewService {
-  isLarge: boolean;
-  isLarge$ = new BehaviorSubject<boolean>(this.isLarge);
-
-  // set isLarge$ / isLarge values
-  setIsLarge(value: boolean) {
-    this.isLarge$.next(value);
-    this.isLarge = value;
-  }
-
-  // getter to retrieve current value of isLarge
-  get getIsLarge(): boolean {
-    return this.isLarge;
-  }
-
-}
-```
-
-You can download this code here: [mqview.service.ts](https://github.com/kmaida/angular-mediacheck/blob/master/sample-mqview-service/mqview.service.ts).
-
-### Root App Component
-
-Your root app component then sets the data in `MqviewService` based on its use of `MediacheckService`. The code might look something like this:
-
-```
-import { Component, OnInit } from '@angular/core';
-import { MediacheckService } from './mediacheck.service';
-import { MqviewService } from './mqview.service';
+...
+import { MedicheckService } from './mediacheck.service';
 
 @Component({
-  selector: 'app-root',
-  template: `
-    <p><strong>Media Query Shortname:</strong> {{mc.getMqName}}</p>
-    <router-outlet></router-outlet>
-  `
+  ...,
+  providers: [MediacheckService]
 })
-export class AppComponent implements OnInit {
-
-  constructor(
-    private mc: MediacheckService,
-    private mqview: MqviewService
-  ) { }
-
-  ngOnInit() {
-    // determine which media query is active on initial load and set
-    this.mqview.setIsLarge(this.mc.check('large'));
-
-    // set up listener for entering 'small' media query
-    this.mc.onMqChange('small', (mql) => {
-      this.mqview.setIsLarge(false);
-    });
-
-    // set up listener for entering 'large' media query
-    this.mc.onMqChange('large', (mql) => {
-      this.mqview.setIsLarge(true);
-    });
-  }
-
-}
+export class InstanceComponent {
+  constructor(private mc: MediacheckService) {}
+  ...
 ```
 
-You can download this code here: [app.component.ts](https://github.com/kmaida/angular-mediacheck/blob/master/sample-mqview-service/app.component.ts).
+## Usage Examples
 
-### Component
-
-Finally, components in your app can use the getter `mqview.getIsLarge` directly to make changes in their templates. You can also _subscribe_ to the `mqview.isLarge$` subject to execute code when the media query changes. App components might look something like this:
-
-```
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
-import { MediacheckService } from './mediacheck.service';
-import { MqviewService } from './mqview.service';
-
-@Component({
-  selector: 'app-home',
-  template: `
-    <div *ngIf="mqview.getIsLarge">Large</div>
-    <div *ngIf="!mqview.getIsLarge">Small</div>
-  `
-})
-export class HomeComponent implements OnInit, OnDestroy {
-  mqSub: Subscription;
-  
-  constructor(public mqview: MqviewService) { }
-
-  ngOnInit() {
-    // subscribe to isLarge$ subject
-    this.mqSub = this.mqview.isLarge$.subscribe(
-      isLarge => {
-        // do something based on the updated value of isLarge
-        console.log('mqview isLarge changed:', isLarge);
-      }
-    );
-  }
-
-  ngOnDestroy() {
-    // prevent memory leaks
-    this.mqSub.unsubscribe();
-  }
-
-}
-```
-
-You can download this code here: [home.component.ts](https://github.com/kmaida/angular-mediacheck/blob/master/sample-mqview-service/home.component.ts).
-
-## Usage Example: Input / OnChanges
-
-If you _don't_ want to use the service above and need [matchMedia](https://developer.mozilla.org/en-US/docs/Web/API/Window/matchMedia) with the same set of media queries through child components, I recommend injecting the service _only_ in the most ancestral component(s)* and using `Input` and/or `OnChanges` in children.
-
-### Parent Component
-
-*_NOTE: If you want to share data across different_ routed _components, this approach is not logical. You'll want to explore [Usage Example: Data Service](https://github.com/kmaida/angular-mediacheck#usage-example-data-service)._
-
-Your parent component might look something like this:
-
-```
-import { Component, OnInit } from '@angular/core';
-import { MediacheckService } from './mediacheck.service';
-
-@Component({
-  selector: 'app-root',
-  template: `
-    <p *ngIf="isLarge">LARGE (we could show a sprawling data table)</p>
-    <p *ngIf="!isLarge">SMALL (we could show a condensed list)</p>
-    <app-child [isLarge]="isLarge"></app-child>
-  `
-})
-export class AppComponent implements OnInit {
-  // property to track large (or small) view
-  isLarge: boolean;
-
-  // make MediacheckService available in constructor
-  constructor(private mc: MediacheckService) { }
-
-  ngOnInit() {
-    // determine which media query is active on initial load
-    this.isLarge = this.mc.check('large');
-
-    // set up listener for entering 'small' media query
-    this.mc.onMqChange('small', (mql) => {
-      this.showSmall(mql);
-    });
-
-    // set up listener for entering 'large' media query
-    this.mc.onMqChange('large', (mql) => {
-      this.showLarge(mql);
-    });
-  }
-
-  showSmall(mql) {
-    console.log(`Entering SMALL mq: ${mql.media}`);
-    this.isLarge = false;
-  }
-
-  showLarge(mql) {
-    console.log(`Entering LARGE mq: ${mql.media}`);
-    this.isLarge = true;
-  }
-
-}
-```
-
-You can download this code here: [app.component.ts](https://github.com/kmaida/angular-mediacheck/blob/master/sample-parent-to-child/app.component.ts).
-
-### Child Components
-
-Your parent component should be ubiquitious enough for child components to use it without having to inject `MediacheckService` and create their own matchMedia listeners. Here is an example showing two ways to use the base component's properties to react to media query events:
-
-```
-import { Component, Input, OnChanges } from '@angular/core';
-
-@Component({
-  selector: 'app-child',
-  template: `
-    <p>Child component: {{getSize}}</p>
-  `
-})
-export class ChildComponent implements OnChanges {
-  // input 'isLarge' property from parent
-  @Input() isLarge: boolean;
-  // display size based on the input property value
-  size: string;
-
-  // detect and respond to changes to input(s)
-  ngOnChanges(changes) {
-    const isLargeCurrent = changes.isLarge.currentValue;
-    console.log(`isLarge input change detected: ${isLargeCurrent}`);
-  }
-
-  // accessor to return property
-  get getSize(): string {
-    this.size = this.isLarge ? 'Big' : 'Little';
-    return this.size;
-  }
-}
-```
-
-You can download this code here: [child.component.ts](https://github.com/kmaida/angular-mediacheck/blob/master/sample-parent-to-child/child.component.ts).
+To explore different ways to use Mediacheck effectively, you can clone this repo and run the [sample app here](https://github.com/kmaida/angular-mediacheck/tree/master/mediacheck-app). You must have the [@angular/cli](https://github.com/angular/angular-cli) installed. Run `npm install` to download dependencies. Then run `ng serve` to serve the app and view it at `http://localhost:4200` in your browser.
 
 ## Contributing
 
@@ -302,7 +143,7 @@ Thank you!
 
 ## Changelog
 
-* 11/28/2017 - update samples and README to verify Angular 5 compatibility
+* 11/28/2017 - major update of service to incorporate a subject. Updated README, removed old examples, replaced with full sample app
 * 03/24/2017 - rename repo to `angular-mediacheck` to match Angular branding guidelines and honor release of Angular 4
 * 03/23/2017 - simplified code in helper service and in components
 * 03/01/2017 - cleaned up code to comply with angular-cli rc linting rules
