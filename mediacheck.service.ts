@@ -1,7 +1,5 @@
 import { Injectable, NgZone } from '@angular/core';
 
-declare var window: any;
-
 @Injectable()
 export class MediacheckService {
   mqueries = {
